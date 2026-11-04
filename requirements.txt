@@ -1,0 +1,11 @@
+# Versions used to produce the results of the paper (Python 3.12)
+torch==2.15.0
+numpy==2.5.4
+pandas==3.1.0
+scipy==1.18.1
+scikit-learn==1.9.1
+rdkit==2026.9.1
+mordredcommunity==2.0.7
+# only for --descriptor mol2vec
+gensim==4.4.0
+mol2vec==0.2.2

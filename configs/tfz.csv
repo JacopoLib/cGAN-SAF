@@ -1,0 +1,2 @@
+lr_G,lr_T,alpha_mean,tau,num_queries,batch_size,num_layers_trunk,neurons_trunk,num_layers_D,neurons_D,num_layers_E,neurons_E,num_layers_T,neurons_T,features,activation,k1_over_k2,lam,beta,dropout
+-2,-3,0.1,0.01,2,128,1,64,2,256,2,32,1,64,256,relu,0.5,1.5,1.0,0.0

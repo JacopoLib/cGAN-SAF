@@ -1,0 +1,255 @@
+name,smiles
+n-propane,CCC
+n-butane ,CCCC
+n-pentane ,CCCCC
+n-hexane,CCCCCC
+n-heptane,CCCCCCC
+n-octane ,CCCCCCCC
+n-nonane ,CCCCCCCCC
+n-decane ,CCCCCCCCCC
+n-undecane,CCCCCCCCCCC
+n-dodecane ,CCCCCCCCCCCC
+n-tridecane,CCCCCCCCCCCCC
+n-tetradecane ,CCCCCCCCCCCCCC
+n-pentadecane,CCCCCCCCCCCCCCC
+n-hexadecane ,CCCCCCCCCCCCCCCC
+n-heptadecane,CCCCCCCCCCCCCCCCC
+n-octadecane,CCCCCCCCCCCCCCCCCC
+n-nonadecane,CCCCCCCCCCCCCCCCCCC
+n-eicosane,CCCCCCCCCCCCCCCCCCCC
+2-methylbutane,CCC(C)C
+"2,2-dimethylbutane ",CCC(C)(C)C
+"2,2,3-trimethylbutane ",CC(C)C(C)(C)C
+2-methylpentane ,CCCC(C)C
+3-methylpentane,CCC(C)CC
+"2,3-dimethylpentane ",CCC(C)C(C)C
+"2,4-dimethylpentane ",CC(C)CC(C)C
+3-ethylpentane ,CCC(CC)CC
+"2,2,4-trimethylpentane ",CC(C)CC(C)(C)C
+2-methylhexane ,CCCCC(C)C
+2-methyloctane,CCCCCCC(C)C
+"2,2-dimethylheptane",CCCCCC(C)(C)C
+"2,2-dimethylhexane",CCCCC(C)(C)C
+"2,2-dimethylpentane",CCCC(C)(C)C
+"2,2,3-trimethylpentane",CCC(C)C(C)(C)C
+"2,2,5,5-tetramethylhexane",CC(C)(C)CCC(C)(C)C
+"2,3-dimethylhexane",CCCC(C)C(C)C
+"2,3,3-trimethylpentane",CCC(C)(C)C(C)C
+"2,3,4-trimethylpentane",CC(C)C(C)C(C)C
+"2,4-dimethylhexane",CCC(C)CC(C)C
+"2,5-dimethylhexane",CC(C)CCC(C)C
+"2,6-dimethylheptane",CC(C)CCCC(C)C
+"3,3-diethylpentane",CCC(CC)(CC)CC
+"3,3-dimethylhexane",CCCC(C)(C)CC
+"3,3-dimethylpentane",CCC(C)(C)CC
+"3,4-dimethylhexane",CCC(C)C(C)CC
+4-methylheptane,CCCC(C)CCC
+"2,2,4,5,6-pentamethylheptane",CC(C)C(C)C(C)CC(C)(C)C
+"2,6,10-trimethyltridecane",CCCC(C)CCCC(C)CCCC(C)C
+8-hexylpentadecane,CCCCCCCC(CCCCCC)CCCCCCC
+3-methylhexane ,CCCC(C)CC
+"2,2,5-trimethylhexane ",CC(C)CCC(C)(C)C
+2-methylheptane,CCCCCC(C)C
+"2,2,4,6,6-pentamethylheptane",CC(CC(C)(C)C)CC(C)(C)C
+"2,3(R),4,5(R),6-pentamethylheptane",CC(C)C(C)C(C)C(C)C(C)C
+"2,2-dimethyloctane ",CCCCCCC(C)(C)C
+"2,6-dimethyloctane ",CCC(C)CCCC(C)C
+"4,5-diethyloctane ",CCCC(CC)C(CC)CCC
+5-butylnonane ,CCCCC(CCCC)CCCC
+"2,7-dimethyl-4,5-diethyloctane",CCC(CC(C)C)C(CC)CC(C)C
+farnesane,CCC(C)CCCC(C)CCCC(C)C
+"2,2,4,4,6,8,8-heptamethylnonane ",CC(CC(C)(C)C)CC(C)(C)CC(C)(C)C
+3-ethyldecane ,CCCCCCCC(CC)CC
+4-propyldecane ,CCCCCCC(CCC)CCC
+"5,6-dibutyldecane",CCCCC(CCCC)C(CCCC)CCCC
+"7,8-diethyltetradecane",CCCCCCC(CC)C(CC)CCCCCC
+8-propylpentadecane,CCCCCCCC(CCC)CCCCCCC
+"2,5-dimethylundecane",CCCCCCC(C)CCC(C)C
+5-butyldodecane ,CCCCCCCC(CCCC)CCCC
+7-butyltridecane ,CCCCCCC(CCCC)CCCCCC
+"7,8-dimethyltetradecane",CCCCCCC(C)C(C)CCCCCC
+7-hexylpentadecane ,CCCCCCCCC(CCCCCC)CCCCCC
+9-heptylheptadecane,CCCCCCCCC(CCCCCCC)CCCCCCCC
+9-methylheptadecane,CCCCCCCCC(C)CCCCCCCC
+2-methylheptadecane ,CCCCCCCCCCCCCCCC(C)C
+2-methyloctadecane ,CCCCCCCCCCCCCCCCC(C)C
+"9,10-dimethyloctadecane ",CCCCCCCCC(C)C(C)CCCCCCCC
+"2,9-dimethyl-5,6-diisopentyldecane",CC(C)CCC(CCC(C)C)C(CCC(C)C)CCC(C)C
+"10,13-dimethyldocosane",CCCCCCCCCC(C)CCC(C)CCCCCCCCC
+"9,10-dipropyloctadecane ",CCCCCCCCC(CCC)C(CCC)CCCCCCCC
+5-methylundecane,CCCCCCC(C)CCCC
+9-heptylpentadecane,CCCCCCCCC(CCCCCC)CCCCCCC
+cyclopentane ,C1CCCC1
+cyclohexane ,C1CCCCC1
+methylcyclopentane,CC1CCCC1
+methylcyclohexane,CC1CCCCC1
+"1,2-dimethylcyclohexane",CC1CCCCC1C
+"1,3-dimethylcyclohexane ",CC1CCCC(C1)C
+cyclooctane,C1CCCCCCC1
+ethylcyclohexane ,CCC1CCCCC1
+"1,2,4-trimethylcyclohexane ",CC1CCC(C(C1)C)C
+"1,3,5-trimethylcyclohexane ",CC1CC(CC(C1)C)C
+tetrahydrodicyclopentadiene,C1CC2C3CCC(C3)C2C1
+cis-decalin,C1CC[C@@H]2CCCC[C@@H]2C1
+decalin,C1CCC2CCCCC2C1
+trans-decalin,C1CC[C@H]2CCCC[C@@H]2C1
+n-butylcyclohexane ,CCCCC1CCCCC1
+2-ethyladamantane,CCC1C2CC3CC(C2)CC1C3
+bicyclohexyl,C1CCC(CC1)C2CCCCC2
+3-cyclohexylhexane,CCCC(CC)C1CCCCC1
+propyladamantane,CCCC12CC3CC(CC(C3)C1)C2
+n-propyldecalin,CCCC1CCCC2CCCCC12
+butyladamantane,CCCCC12CC3CC(CC(C3)C1)C2
+perhydrophenanthrene,C1CCC2C(C1)CCC3C2CCCC3
+n-butyldecalin,CCCCC1CCCC2CCCCC12
+sec-butyldecalin,CCC(C)C1CCCC2CCCCC12
+tert-butyldecalin,CC(C)(C)C1CCCC2CCCCC12
+pentyladamantane,CCCCCC12CC3CC(CC(C3)C1)C2
+"1,3,5-triisopropylcyclohexane ",CC(C)C1CC(CC(C1)C(C)C)C(C)C
+"1-trans-3,5-trimethylcyclohexane",CC1CC(CC(C1)C)C
+"1,1-dimethylcyclohexane",CC1(C)CCCCC1
+"1,2,4-trimethyl-5-hexadecylcyclohexane",CCCCCCCCCCCCCCCCC1CC(C)C(C)CC1C
+isopropylcyclohexane,CC(C)C1CCCCC1
+propylcyclohexane,CCCC1CCCCC1
+propylcyclopentane,CCCC1CCCC1
+tert-butylcyclohexane,CC(C)(C)C1CCCCC1
+"1,1,2-trimethylcyclopropane",CC1CC1(C)C
+"1,3-dimethylcyclopentane",CC1CCC(C)C1
+"1,1,3-trimethylcyclopentane",CC1CCC(C)(C)C1
+"1,2,4-trimethylcyclopentane",CC1CC(C)C(C)C1
+1-ethyl-3-methylcyclopentane,CCC1CCC(C)C1
+"1,1,2,4-tetramethylcyclopentane",CC1CC(C)C(C)(C)C1
+"1,1,2-trimethylcyclohexane",CC1CCCCC1(C)C
+"1,1,3-trimethylcyclohexane",CC1CCCC(C)(C)C1
+"1,2,3-trimethylcyclohexane",CC1CCCC(C)C1C
+iso-butylcyclopentane,CC(C)CC1CCCC1
+1-methyl-2-propylcyclohexane,CCCC1CCCCC1C
+iso-butylcyclohexane,CC(C)CC1CCCCC1
+sec-butylcyclohexane,CCC(C)C1CCCCC1
+2-methyl-3cyclohexylnonane,CCCCCCC(C(C)C)C1CCCCC1
+n-octyldecalin,CCCCCCCCC1CCCC2CCCCC12
+1-methyl-3dodecylcyclohexane,CCCCCCCCCCCCC1CCCC(C)C1
+2-cyclohexyltetradecane,CCCCCCCCCCCCC(C)C1CCCCC1
+2-methyl-2cyclohexylpentadecane,CCCCCCCCCCCCCC(C)(C)C1CCCCC1
+"1,2,4-trimethyl-5hexadecylcyclohexane",CCCCCCCCCCCCCCCCC1CC(C)C(C)CC1C
+5-cyclohexyleicosane,CCCCCCCCCCCCCCCC(CCCC)C1CCCCC1
+"2-methyl-1,3-butadiene ",CC(=C)C=C
+cyclohexene,C1CCC=CC1
+1-hexene,CCCCC=C
+1-heptyne ,CCCCCC#C
+4-methyl-1-cyclohexene,CC1CCC=CC1
+1-heptene ,CCCCCC=C
+cis-2-heptene,CCCC\C=C/C
+"1,5-cyclooctadiene",C1CC=CCCC=C1
+4-vinyl-1-cyclohexene,C=CC1CCC=CC1
+"2,5-dimethyl-2,4-hexadiene ",CC(=CC=C(C)C)C
+1-octene ,CCCCCCC=C
+"2,4,4-trimethyl-1-pentene ",CC(=C)CC(C)(C)C
+2-octene,CCCCCC=CC
+cis-3-octene,CCCC\C=C/CC
+trans-3-octene,CCCC/C=C/CC
+"2,4-dimethyl-2-heptene ",CCCC(C)C=C(C)C
+1-nonene ,CCCCCCCC=C
+"2,6-dimethylheptene",CC(C)CCCC(C)=C
+(R )-(+ )-limonene,CC1=CC[C@@H](CC1)C(=C)C
+3-carene,CC1=CCC2C(C1)C2(C)C
+limonene,CC(=C)C1CCC(=CC1)C
+ocimene,CC(C)\C=C\C=C(/C)C=C
+α-pinene,CC1=CCC2CC1C2(C)C
+β-pinene,CC1(C2CCC(=C)C1C2)C
+γ-terpinene,CC1=CCC(=CC1)C(C)C
+"1,9-decadiene ",C=CCCCCCCC=C
+1-decene,CCCCCCCCC=C
+1-undecene ,CCCCCCCCCC=C
+1-dodecene ,CCCCCCCCCCC=C
+1-tetradecene,CCCCCCCCCCCCC=C
+bisabolene,CC(C)=CCC\C(C)=C/1CCC(=CC1)C
+caryophyllene,C\C1=C/CCC(=C)C2CC(C)(C)C2CC1
+farnesene,CC(=CCC/C(=C/C/C=C(\C)/C=C)/C)C
+"2,6,7-trimethyl-2,6tridecadiene",CCCCCCC(C)=C(C)CCC=C(C)C
+1-hexadecene ,CCCCCCCCCCCCCCC=C
+"2,2,6,6,8,8-hexamethyl4-methylene-nonane",CC(C)(C)CC(=C)CC(C)(C)CC(C)(C)C
+4-butyl-4-dodecene,CCCC(CCCC)=CCCCCCCC
+5-butyl-4-dodecene ,CCCC=C(CCCC)CCCCCCC
+7-butyltridecene,CCCCCCC(CCCC)CCCCC=C
+"3,12-diethyl-3,11tetradecadiene",CCC(CC)=CCCCCCCC=C(CC)CC
+1-octadecene ,CCCCCCCCCCCCCCCCC=C
+"7,10-dimethyl-8-hexadecene ",CCCCCCC(C)C=CC(C)CCCCCC
+8-propyl-8-pentadecene ,CCCCCCCC(CCC)=CCCCCCC
+9-methyl-9-heptadecene ,CCCCCCCCC(C)=CCCCCCCC
+7-hexyl-7-pentadecene ,CCCCCCCC=C(CCCCCC)CCCCCC
+"10,13-dimethyl-11doeicosene",CCCCCCCCCC(C)C=CC(C)CCCCCCCCC
+benzene ,C1=CC=CC=C1
+toluene ,CC1=CC=CC=C1
+"1,2-dimethylbenzene",CC1=C(C)C=CC=C1
+"1,3-dimethylbenzene ",CC1=CC=CC(C)=C1
+"1,4-dimethylbenzene",CC1=CC=C(C)C=C1
+ethyl benzene,CCC1=CC=CC=C1
+indan ,C1=CC2=C(C=C1)CCC2
+"1,2,3-trimethylbenzene",CC1=CC=CC(C)=C1C
+"1,2,4-trimethylbenzene ",CC1=CC(C)=C(C)C=C1
+"1,3,5-trimethylbenzene ",CC1=CC(C)=CC(C)=C1
+isopropyl benzene,CC(C)C1=CC=CC=C1
+n-propylbenzene ,CCCC1=CC=CC=C1
+tetralin,C1=CC2=C(C=C1)CCCC2
+"1,2,4,5-tetramethylbenzene ",CC1=CC(C)=C(C)C=C1C
+"1,3-diethylbenzene ",CCC1=CC=CC(CC)=C1
+1-methyl-4-isopropylbenzene,CC1=CC=C(C(C)C)C=C1
+n-butylbenzene ,CCCCC1=CC=CC=C1
+sec-butylbenzene ,CCC(C)C1=CC=CC=C1
+tert-butyl benzene,CC(C)(C)C1=CC=CC=C1
+naphthalene,C1=CC2=C(C=C1)C=CC=C2
+1-methylnaphthalene,CC1=C2C=CC=CC2=CC=C1
+2-methylnaphthalene,CC1=CC2=C(C=CC=C2)C=C1
+n-pentylbenzene ,CCCCCC1=CC=CC=C1
+biphenyl,C1=CC=C(C=C1)C2=CC=CC=C2
+"2,6-dimethylnaphthalene",CC1=CC2=C(C=C1)C=C(C)C=C2
+"1,3,5-triethylbenzene",CCC1=CC(=CC(=C1)CC)CC
+m-diisopropylbenzene,CC(C)C1=CC(=CC=C1)C(C)C
+n-hexylbenzene,CCCCCCC1=CC=CC=C1
+diphenylmethane,C1=CC=C(C=C1)CC2=CC=CC=C2
+n-propyltetralin,CCCC1CCCC2=C1C=CC=C2
+1-butylnaphthalene ,CCCCC1=C2C=CC=CC2=CC=C1
+"2-(1,1-dimethylethyl)-naphthalene ",CC(C)(C)C1=CC2=C(C=CC=C2)C=C1
+sec-butyltetralin,CCC(C)C1CCCC2=CC=CC=C12
+tert-butyltetralin,CC(C)(C)C1CCCC2=CC=CC=C12
+2-phenyloctane,CCCCCCC(C)C1=CC=CC=C1
+n-octylbenzene ,CCCCCCCCC1=CC=CC=C1
+"1,3,5-triisopropylbenzene",CC(C)C1=CC(=CC(=C1)C(C)C)C(C)C
+n-nonylbenzene,CCCCCCCCCC1=CC=CC=C1
+2-phenyl-2-undecene,CCCCCCCCC=C(C)C1=CC=CC=C1
+2-phenylundecane ,CCCCCCCCCC(C)C1=CC=CC=C1
+2-octylnaphthalene ,CCCCCCCCC1=CC2=CC=CC=C2C=C1
+n-octyltetralin,CCCCCCCCC1CCCC2=CC=CC=C12
+4-phenyldodecane ,CCCCCCCCC(CCC)C1=CC=CC=C1
+n-dodecylbenzene ,CCCCCCCCCCCCC1=CC=CC=C1
+7-phenyltridecane ,CCCCCCC(CCCCCC)C1=CC=CC=C1
+2-phenyltetradecane,CCCCCCCCCCCCC(C)C1=CC=CC=C1
+n-tetradecylbenzene,CCCCCCCCCCCCCCC1=CC=CC=C1
+2-methyl-2-phenylpentadecane,CCCCCCCCCCCCCC(C)(C)C1=CC=CC=C1
+2-methyl-4-isobutyl-4-phenylundecane,CCCCCCCC(CC(C)C)(CC(C)C)C1=CC=CC=C1
+2-methyl-2-phenylheptadecane,CCCCCCCCCCCCCCCC(C)(C)C1=CC=CC=C1
+5-butyl-5-phenyltetradecane,CCCCCCCCCC(CCCC)(CCCC)C1=CC=CC=C1
+di-n-octyltetralin,CCCCCCCCC1(CCCC2=CC=CC=C21)CCCCCCCC
+5-phenyleicosane,CCCCCCCCCCCCCCCC(CCCC)C1=CC=CC=C1
+"1,4-dioctyltetralin",CCCCCCCCC1CCC(CCCCCCCC)c2ccccc21
+"1,2-diphenylethane",c1ccc(CCc2ccccc2)cc1
+"1,2,3,4-tetramethylbenzene",CC1=C(C)C(C)=C(C)C=C1
+"1,3-di(propan-2-yl)benzene",CC(C)C1=CC(=CC=C1)C(C)C
+"1,3-xylene",CC1=CC=CC(C)=C1
+2-methyl-2-(beta-naphthyl)decane,CCCCCCCCC(C)(C)c1ccc2ccccc2c1
+2-methyl-2-(beta-naphthyl)hexane,CCCCC(C)(C)c1ccc2ccccc2c1
+2-tert-butylnaphthalene,CC(C)(C)C1=CC2=C(C=CC=C2)C=C1
+3-ethyl-3-(beta-naphthyl)nonane,CCCCCCC(CC)(CC)c1ccc2ccccc2c1
+4-isopropyltoluene,CC1=CC=C(C(C)C)C=C1
+4-methyl-4-(beta-naphthyl)heptane,CCCC(C)(CCC)c1ccc2ccccc2c1
+5-methyl-5-(beta-naphthyl)nonane,CCCCC(C)(CCCC)c1ccc2ccccc2c1
+butyltetralin,CCCCC1CCCC2=C1C=CC=C2
+n-heptylbenzene,CCCCCCCc1ccccc1
+octylxylene,CCCCCCCCc1cccc(C)c1C
+propyltetralin,CCCC1CCCC2=C1C=CC=C2
+1-Methyl-4-propylbenzene,CCCC1=CC=C(C)C=C1
+phenylundec-2-ene,CCCCCCCCC=CCc1ccccc1
+"1,2,4-trimethyl-5-hexadecyl_benzene",CCCCCCCCCCCCCCCCc1cc(C)cc(C)c1C
+"1,4-dibutylbenzene",CCCCc1ccc(CCCC)cc1
+5-butyl-tetralin,CCCCc1cccc2c1CCCC2
