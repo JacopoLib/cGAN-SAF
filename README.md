@@ -119,6 +119,6 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
 
 ## License
 
-Copyright (C) 2026 Jacopo Liberatori. The code is released under the [Prosperity Public License 3.0.0](LICENSE)
+Copyright (C) 2026 The Authors. The code is released under the [Prosperity Public License 3.0.0](LICENSE)
 (non-commercial use). The property databases in `data/` are compiled from the literature (including the tables of
 Yaws); see the paper for the sources.
