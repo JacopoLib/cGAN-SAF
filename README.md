@@ -16,7 +16,7 @@ database and with the hyperparameters selected by the nested k-fold cross-valida
 
 All models use Mordred descriptors for the pure compounds, multi-query attention pooling with feature augmentation
 for mixtures, the softmin-of-K reconstruction loss and a checkpoint on the CRPS. The trained weights are
-available at <!-- Zenodo DOI -->; `predict.py` uses them to predict the property of new pure compounds and blends.
+archived on Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)); `predict.py` uses them to predict the property of new pure compounds and blends.
 
 ## Layout
 
@@ -61,6 +61,9 @@ improvement. The learning rates are halved when the training losses stop decreas
   next to the measured values, for the training data).
 
 ## Prediction
+
+> **Note.** The inference bundles are PyTorch files loaded with `torch.load`, which can execute arbitrary code
+> if a file has been tampered with. Only load bundles obtained from the Zenodo record above.
 
 ```bash
 python predict.py --bundle results/final/tfz/bundle_tfz.pt --smiles CCCCCCCCCC "CC(C)CCCCC(C)C"
