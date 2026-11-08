@@ -251,7 +251,8 @@ class CGAN:
         g = torch.Generator()
         g.manual_seed(seed)
         if ds.n_tasks == 1:
-            loader = DataLoader(data, batch_size=hp.batch_size, shuffle=True, generator=g)
+            # drop_last: the batch-wise latent term is unreliable on a very small last batch
+            loader = DataLoader(data, batch_size=hp.batch_size, shuffle=True, generator=g, drop_last=True)
         else:
             batches = balanced_batches(ds.task_id[rows], hp.batch_size, ds.n_tasks, seed)
             loader = DataLoader(

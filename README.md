@@ -16,7 +16,7 @@ database and with the hyperparameters selected by the nested k-fold cross-valida
 
 All models use Mordred descriptors for the pure compounds, multi-query attention pooling with feature augmentation
 for mixtures, the softmin-of-K reconstruction loss and a checkpoint on the CRPS. The trained weights are
-archived on Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)); `predict.py` uses them to predict the property of new pure compounds and blends.
+available on Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)); `predict.py` uses them to predict the property of new pure compounds and blends.
 
 ## Layout
 
@@ -26,7 +26,7 @@ predict.py         predictive distribution for pure compounds or blends from an 
 configs/           hyperparameters of the three models
 cgan/
   config.py        paths, descriptor flag, per-task gate, training settings
-  descriptors.py   Mordred (computed from the SMILES and filtered) and Mol2Vec species descriptors
+  descriptors.py   Mordred (computed from the SMILES; fixed list or filtered) and Mol2Vec species descriptors
   data.py          freezing-point and DCN databases -> Dataset
   models.py        mixture encoder (attention pooling), generator, discriminators, latent encoder
   trainer.py       adversarial and softmin-of-K losses, CRPS and other metrics, training loop
@@ -62,9 +62,6 @@ improvement. The learning rates are halved when the training losses stop decreas
 
 ## Prediction
 
-> **Note.** The inference bundles are PyTorch files loaded with `torch.load`, which can execute arbitrary code
-> if a file has been tampered with. Only load bundles obtained from the Zenodo record above.
-
 ```bash
 python predict.py --bundle results/final/tfz/bundle_tfz.pt --smiles CCCCCCCCCC "CC(C)CCCCC(C)C"
 python predict.py --bundle results/final/dcn_tfz/bundle_dcn.pt --input blends.csv --out predictions.csv
@@ -86,17 +83,21 @@ with the same descriptors as in training (this needs RDKit and mordred).
 
 The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`) chooses the molecular representation:
 
-* `mordred` (default): Mordred 1D/2D/3D descriptors computed from the SMILES, then filtered (columns that are mostly
-  zero or missing, near-constant, or Spearman-correlated above 0.95 with an earlier column) and standardized. The
-  filter only sees the species of the database(s) of the model being trained: freezing point for `tfz`, DCN for `dcn`,
-  both for `dcn_tfz`. The raw descriptors of all species are shipped in `data/descriptors/mordred_raw.csv.gz`; run
+* `mordred` (default): Mordred 1D/2D/3D descriptors computed from the SMILES and standardized. The columns are selected
+  per model (`DESCRIPTOR_SELECTION` in `cgan/config.py`):
+  * `tfz` and `dcn`: the fixed list of 347 descriptors in `data/descriptors/mordred_columns.txt`;
+  * `dcn_tfz`: the columns left by a filter (columns that are mostly zero or missing, near-constant, or
+    Spearman-correlated above 0.95 with an earlier column) applied to the species of both databases (309 columns).
+
+  The raw descriptors of all species are shipped in `data/descriptors/mordred_raw.csv.gz`; run
 
   ```bash
   python -m cgan.descriptors --kind mordred --recompute
   ```
 
   to recompute them from the SMILES (several minutes; the 3D descriptors depend on the RDKit conformer generator, so
-  they change slightly with the RDKit version).
+  they change slightly with the RDKit version). The inference bundles store the selected columns, so `predict.py`
+  describes new species in the same way as in training.
 * `mol2vec`: 300-dimensional Mol2Vec embeddings. Download the pre-trained model `model_300dim.pkl` from
   <https://github.com/samoturk/mol2vec/tree/master/examples/models> and place it in `data/descriptors/` (or set the
   `MOL2VEC_MODEL` environment variable).
@@ -105,9 +106,9 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
 
 | Folder | Content |
 | --- | --- |
-| `data/tfz` | freezing points [K] of 985 pure hydrocarbons (`pure_*`) and 261 blend measurements (`blends_*`: components, volume fractions, values): 251 binary and 10 ternary blends |
+| `data/tfz` | freezing points [K] of 893 pure hydrocarbon measurements (`pure_*`) and 261 blend measurements (`blends_*`: components, volume fractions, values): 251 binary and 10 ternary blends |
 | `data/dcn` | derived cetane numbers of 254 pure hydrocarbons (386 measurements, `pure_*`) and 543 blend measurements (`blends_*`) |
-| `data/descriptors` | cached raw Mordred descriptors of all species |
+| `data/descriptors` | cached raw Mordred descriptors of all species and the fixed list of 347 columns (`mordred_columns.txt`) |
 
 ## Citation
 
@@ -122,6 +123,6 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
 
 ## License
 
-Copyright (C) 2026 The Authors. The code is released under the [Prosperity Public License 3.0.0](LICENSE)
+Copyright (C) 2026 Jacopo Liberatori. The code is released under the [Prosperity Public License 3.0.0](LICENSE)
 (non-commercial use). The property databases in `data/` are compiled from the literature (including the tables of
 Yaws); see the paper for the sources.

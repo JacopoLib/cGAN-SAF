@@ -1,7 +1,7 @@
 """Property databases (DCN, freezing point) and the model-ready `Dataset`.
 
 Every sample is a composition {SMILES: volume fraction}: a pure compound has a single component with fraction 1.
-The species of the requested tasks form one vocabulary, on which descriptors are filtered and standardized.
+The species of the requested tasks form one vocabulary, on which descriptors are standardized.
 """
 
 import ast
@@ -63,8 +63,6 @@ def load_tfz():
 
 
 LOADERS = {"dcn": load_dcn, "tfz": load_tfz}
-
-
 def species_vocabulary(tasks):
     """Ordered list of the distinct SMILES appearing in the databases of `tasks`."""
     return list(dict.fromkeys(smi for task in tasks for _, _, comp in LOADERS[task]() for smi in comp))
@@ -88,7 +86,7 @@ class Dataset:
     y_std: np.ndarray
     blend_gate: list  # per task, see config.TASKS
     descriptor: str  # "mordred" or "mol2vec"
-    descriptor_info: dict  # filter outcome (Mordred), to describe new species at prediction time
+    descriptor_info: dict  # Mordred columns and medians, to describe new species at prediction time
 
     @property
     def n_tasks(self):
@@ -108,9 +106,10 @@ def build_dataset(tasks, descriptor=config.DESCRIPTOR):
     species = species_vocabulary(tasks)
     index = {s: i for i, s in enumerate(species)}
 
-    Z, descriptor_info = species_descriptors(species, descriptor)
+    Z, descriptor_info = species_descriptors(species, descriptor, selection=config.descriptor_selection(tasks))
     Z = torch.tensor(Z, dtype=torch.float32)
-    desc_mean, desc_std = Z.mean(dim=0), Z.std(dim=0) + 1e-12
+    desc_mean, desc_std = Z.mean(dim=0), Z.std(dim=0)
+    desc_std[desc_std < 1e-8] = 1.0  # columns constant over the training species stay at zero
     Z = (Z - desc_mean) / desc_std
 
     fuels, y, task_id, comps = [], [], [], []
