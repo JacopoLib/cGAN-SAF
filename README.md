@@ -119,7 +119,7 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
 @article{Liberatori2026cGAN,
   title   = {Uncertainty-aware sustainable aviation fuel property prediction using a conditional generative adversarial network with attention pooling},
   author  = {Liberatori, Jacopo and Iavarone, Salvatore and Vicquelin, Ronan},
-  journal = {Energy and AI},
+  journal = {Energy and AI (submitted for publication)},
   year    = {2026}
 }
 ```
