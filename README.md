@@ -5,6 +5,8 @@ PyTorch code and datasets accompanying
 > J. Liberatori, S. Iavarone, R. Vicquelin, *Uncertainty-aware sustainable aviation fuel property prediction using a
 > conditional generative adversarial network with attention pooling*, Energy and AI (submitted).
 
+The model predicts the **distribution** of a property of a pure hydrocarbon or of a blend from the SMILES and the volume fractions of its components: every component is described by Mordred descriptors (or a Mol2Vec embedding), the blend by their fraction-weighted mean plus a multi-query attention correction, and a generator that takes a latent noise vector returns samples of the property. Two properties of sustainable aviation fuels are covered: the **derived cetane number** (DCN) and the **freezing point** (T<sub>fz</sub>).
+
 The repository contains the final training of the **three c-GAN models** of the paper, each on its whole property
 database and with the hyperparameters selected by the nested k-fold cross-validation (Section 2.5):
 
@@ -16,9 +18,9 @@ database and with the hyperparameters selected by the nested k-fold cross-valida
 
 All models use Mordred descriptors for the pure compounds, multi-query attention pooling with feature augmentation
 for mixtures, the softmin-of-K reconstruction loss and a checkpoint on the CRPS. The trained weights are
-archived on Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)); `predict.py` uses them to predict the property of new pure compounds and blends.
+archived on Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)); `predict.py` uses them to predict the property of new pure compounds and blends. The nested cross-validation used to select the hyperparameters is described in the paper and is not part of this repository.
 
-## Layout
+# Repository layout
 
 ```
 train_final.py     final training of the three models -> weights and inference bundles
@@ -33,16 +35,26 @@ cgan/
   final_training.py  training with checkpoint, Monte Carlo predictions, inference bundles
   utils.py         seeding, task-balanced batches, early stopping / checkpoints
 data/              property databases and cached raw Mordred descriptors
+docs/              documentation
 ```
 
-## Installation
+# Requirements
+
+| | |
+|---|---|
+| **Python** | Python 3.12; `torch`, `numpy`, `pandas`, `scipy`, `rdkit` and `mordredcommunity`, with the versions in [`requirements.txt`](requirements.txt) (those used to produce the results of the paper). `gensim` and `mol2vec` are needed only for the Mol2Vec descriptors. |
+| **Hardware** | CPU or CUDA GPU |
+
+# Quick start
 
 ```bash
+git clone https://github.com/JacopoLib/cGAN-SAF.git
+cd cGAN-SAF
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Final training
+**Final training.**
 
 ```bash
 python train_final.py                  # tfz, dcn and dcn_tfz, one after the other
@@ -54,13 +66,14 @@ training data: the weights of the epoch with the lowest CRPS are kept, and train
 improvement. The learning rates are halved when the training losses stop decreasing for 10 epochs.
 `results/final/<model>/` then contains
 
-* `best_global.pt`: weights of the best epoch (all networks);
-* `bundle_<task>.pt`: inference bundle of each task (one for the single-task models, two for `dcn_tfz`), with the
-  weights, the hyperparameters, the species descriptors and the normalization statistics;
-* `history.csv`, `config.csv` and `predictions_<task>.csv` (predictive mean, standard deviation and 95% interval
-  next to the measured values, for the training data).
+| File | Content |
+|---|---|
+| `best_global.pt` | weights of the best epoch (all networks) |
+| `bundle_<task>.pt` | inference bundle of each task (one for the single-task models, two for `dcn_tfz`): weights, hyperparameters, species descriptors and normalization statistics |
+| `history.csv`, `config.csv` | CRPS, RMSE and losses of every epoch; hyperparameters used |
+| `predictions_<task>.csv` | predictive mean, standard deviation and 95% interval next to the measured values, for the training data |
 
-## Prediction
+**Prediction.**
 
 > **Note.** The inference bundles are PyTorch files loaded with `torch.load`, which can execute arbitrary code
 > if a file has been tampered with. Only load bundles obtained from the Zenodo record above.
@@ -82,7 +95,7 @@ The output gives, for each pure compound or blend, the mean, standard deviation 
 Monte Carlo samples of the predictive distribution. Species outside the training databases are described on the fly
 with the same descriptors as in training (this needs RDKit and mordred).
 
-## Species descriptors
+# Species descriptors
 
 The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`) chooses the molecular representation:
 
@@ -105,7 +118,7 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
   <https://github.com/samoturk/mol2vec/tree/master/examples/models> and place it in `data/descriptors/` (or set the
   `MOL2VEC_MODEL` environment variable).
 
-## Data
+# Data
 
 | Folder | Content |
 | --- | --- |
@@ -113,7 +126,16 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
 | `data/dcn` | derived cetane numbers of 254 pure hydrocarbons (386 measurements, `pure_*`) and 543 blend measurements (`blends_*`) |
 | `data/descriptors` | cached raw Mordred descriptors of all species and the fixed list of 347 columns (`mordred_columns.txt`) |
 
-## Citation
+The file formats, the units and the way the databases become training samples are in [`docs/Input-data.md`](docs/Input-data.md).
+
+# Documentation
+
+The `docs/` folder describes the code in detail, starting from [`docs/README.md`](docs/README.md):
+
+* how to use the code: [installation](docs/Installation.md), [quick start](docs/Quick-start.md), [prediction](docs/Prediction.md), [configuration reference](docs/Configuration-reference.md), [input data](docs/Input-data.md), [API reference](docs/API-reference.md) and [development notes](docs/Development.md);
+* what the code does: [descriptors](docs/Descriptors.md), [model architecture](docs/Model-architecture.md) and [training](docs/Training.md).
+
+# How to cite
 
 ```bibtex
 @article{Liberatori2026cGAN,
@@ -124,7 +146,7 @@ The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`
 }
 ```
 
-## License
+# License
 
 Copyright (C) 2026 The Authors. The code is released under the [Prosperity Public License 3.0.0](LICENSE)
 (non-commercial use). The property databases in `data/` are compiled from the literature (including the tables of
