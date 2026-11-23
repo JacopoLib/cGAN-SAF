@@ -3,7 +3,7 @@
 PyTorch code and datasets accompanying
 
 > J. Liberatori, S. Iavarone, R. Vicquelin, *Uncertainty-aware sustainable aviation fuel property prediction using a
-> conditional generative adversarial network with attention pooling*, Energy and AI (submitted).
+> conditional generative adversarial network with attention pooling*, Energy & Fuels (submitted).
 
 The model predicts the **distribution** of a property of a pure hydrocarbon or of a blend from the SMILES and the volume fractions of its components: every component is described by Mordred descriptors (or a Mol2Vec embedding), the blend by their fraction-weighted mean plus a multi-query attention correction, and a generator that takes a latent noise vector returns samples of the property. Two properties of sustainable aviation fuels are covered: the **derived cetane number** (DCN) and the **freezing point** (T<sub>fz</sub>).
 
@@ -141,7 +141,7 @@ The `docs/` folder describes the code in detail, starting from [`docs/README.md`
 @article{Liberatori2026cGAN,
   title   = {Uncertainty-aware sustainable aviation fuel property prediction using a conditional generative adversarial network with attention pooling},
   author  = {Liberatori, Jacopo and Iavarone, Salvatore and Vicquelin, Ronan},
-  journal = {Energy and AI (submitted for publication)},
+  journal = {Energy & Fuels (submitted for publication)},
   year    = {2026}
 }
 ```
