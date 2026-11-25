@@ -106,7 +106,7 @@ def build_dataset(tasks, descriptor=config.DESCRIPTOR):
     species = species_vocabulary(tasks)
     index = {s: i for i, s in enumerate(species)}
 
-    Z, descriptor_info = species_descriptors(species, descriptor, selection=config.descriptor_selection(tasks))
+    Z, descriptor_info = species_descriptors(species, descriptor)
     Z = torch.tensor(Z, dtype=torch.float32)
     desc_mean, desc_std = Z.mean(dim=0), Z.std(dim=0)
     desc_std[desc_std < 1e-8] = 1.0  # columns constant over the training species stay at zero

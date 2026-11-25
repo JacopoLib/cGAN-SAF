@@ -27,18 +27,7 @@ MODELS = {
     "dcn_tfz": ("dcn", "tfz"),
 }
 
-# Selection of the Mordred columns of each model: "fixed" = list in data/descriptors/mordred_columns.txt, "filter" =
-# species-dependent filter (constant, sparse and correlated columns removed) applied to the species of the model.
-DESCRIPTOR_SELECTION = {"tfz": "fixed", "dcn": "fixed", "dcn_tfz": "filter"}
-
-
-def descriptor_selection(tasks):
-    """Mordred column selection of the model whose tasks are `tasks`."""
-    for name, model_tasks in MODELS.items():
-        if tuple(tasks) == model_tasks:
-            return DESCRIPTOR_SELECTION[name]
-    return "fixed"
-
+# The Mordred columns used by all the models are listed in data/descriptors/mordred_columns.txt.
 
 N_AUX = 2  # reserved input columns (T, has_T); always zero for the properties considered here
 SEED = 42

@@ -7,13 +7,23 @@
 > | Entry point | `train_final.py` |
 > | Final training, checkpoint, bundles | `run_final_training`, `train_with_checkpoint`, `save_bundle` (`cgan/final_training.py`) |
 > | Training loop | `fit_final` (`cgan/trainer.py`) |
-> | Epoch: batches, critic and generator updates | `CGAN.train_epoch` |
+> | Epoch: batches, discriminator and generator updates | `CGAN.train_epoch` |
 > | Losses | `CGAN.critic_loss`, `CGAN.generator_loss` |
 > | Metrics (CRPS, coverage, ...) | `CGAN.evaluate`, `crps_ensemble`, `central_interval` |
 > | Batches, determinism, checkpoint | `cgan/utils.py` |
 
 This page describes the final training of the three models: each model is trained on **the whole database(s)**, without a validation set,
 with the hyperparameters of `configs/<model>.csv`.
+
+## Hyperparameters
+
+The hyperparameters in `configs/<model>.csv` were selected with a nested k-fold cross-validation (k<sub>outer</sub> = 5, k<sub>inner</sub> = 3), which also gives unbiased estimates of the generalisation performance and is not part of this repository. The outer folds group the samples by fuel, so that all the replicate measurements of a compound or blend are in the same fold. In every outer loop N<sub>RS</sub> = 160 configurations are sampled at random; each is trained in the k<sub>inner</sub> inner loops, and the one with the lowest mean validation CRPS is retrained on a 90/10 split of the outer-training folds and evaluated on the held-out fold. The configuration of each model is the most frequent one over the outer folds.
+
+![Nested k-fold cross-validation](img/nested-kfold.png)
+
+*Nested k-fold cross-validation for the selection of the hyperparameters and the unbiased estimate of the generalisation performance.*
+
+The final training described below uses the whole database: no validation subset is held out, and the checkpoint metric M<sub>ck</sub> is evaluated on the training data.
 
 ## Command
 
@@ -34,18 +44,18 @@ For each model the script: loads the hyperparameters, enables determinism with `
 
 ## One epoch
 
-For every mini-batch of `batch_size` samples:
+For every mini-batch of b = `batch_size` samples:
 
-1. **Expansion.** Each sample is repeated `K = 32` times (`K_SAMPLES`), each copy with its own latent vector `z ~ N(0, I)`, so that the
+1. **Expansion.** Each sample is repeated K = 32 times (`K_SAMPLES`), each copy with its own latent vector **z**<sub>i,k</sub> ~ N(**0**, **I**), so that the
    losses can compare the target with 32 generated values.
-2. **Critic updates.** `k1` updates of the critics, with the mixture representation detached.
-3. **Generator updates.** `k2` updates of the mixture encoder, the generator and the latent encoder; the mixture encoder is re-run, so that each step has its own graph.
+2. **Discriminator updates.** u<sub>𝒟</sub> updates of the discriminators, with the mixture representation detached.
+3. **Generator/encoder updates.** u<sub>𝒢/ℰ</sub> updates of the mixture encoder, the generator and the latent encoder; the mixture encoder is re-run, so that each step has its own graph.
 
-`(k1, k2)` follows from `k1_over_k2`: `(int(r), 1)` if `r >= 1` and `(1, int(1/r))` otherwise. `k1_over_k2 = 2` gives two critic updates
-per generator update; `0.5` gives one critic update per two generator updates.
+(u<sub>𝒟</sub>, u<sub>𝒢/ℰ</sub>) follows from `k1_over_k2` = r: (`int(r)`, 1) if r >= 1 and (1, `int(1/r)`) otherwise. `k1_over_k2 = 2` gives two discriminator updates
+per generator update; `0.5` gives one discriminator update per two generator updates.
 
-The critics and the generator side use two Adam optimisers (learning rates `10**lr_T` and `10**lr_G`, see
-[Configuration reference](Configuration-reference.md)). The gradient norm is clipped to 10 for the critics and for each of the mixture encoder, generator and
+The discriminators and the generator side use two Adam optimisers, with the two-time-scale update rule (learning rates 10<sup>`lr_T`</sup> = l<sub>r,𝒟</sub> and 10<sup>`lr_G`</sup> = l<sub>r,𝒢/ℰ</sub>, see
+[Configuration reference](Configuration-reference.md)). The gradient norm is clipped to 10 for the discriminators and for each of the mixture encoder, generator and
 latent encoder.
 
 ### Batches
@@ -58,40 +68,36 @@ latent encoder.
 
 ## Losses
 
-Let `y` be the target (z-scored), `y_hat` the generated values and `K = 32`. Tasks without a label in a sample are ignored (NaN-aware losses); the
+Let γ be the target (z-scored), γ̂<sub>k</sub> the K = 32 generated values of a sample and f<sub>Θ</sub><sup>(t)</sup> the generator of task t. Tasks without a label in a sample are ignored (NaN-aware losses); the
 losses are averaged over the tasks that have labels in the batch.
 
-**Critic (`critic_loss`)**, per task:
+**Discriminator (`critic_loss`)**, per task t:
 
-```
-L_T = - [ mean log(1 - sigmoid(T(x, y)))  +  mean log(sigmoid(T(x, y_hat.detach()))) ]
-```
+$$\mathcal{L}_{\mathcal{D}} = -\Big[\,\mathbb{E}\log\left(1-\sigma(D_{\psi_t}(\boldsymbol{x},\gamma))\right) + \mathbb{E}\log\sigma\left(D_{\psi_t}(\boldsymbol{x},\hat\gamma)\right)\Big]$$
 
-The critic is trained to give a low score to real pairs and a high score to generated pairs.
+where the generated values are detached. The discriminator is trained to give a low score to real pairs and a high score to generated pairs.
 
-**Generator (`generator_loss`)**, per task `t`:
+**Generator and encoder (`generator_loss`)**, per task t:
 
-```
-L_G,t = softplus(T_t(x, y_hat_t)).mean()                     adversarial, non-saturating
-      + (1 - lam) * log_q                                     latent-space regularisation
-      + beta * ( softmin_t + alpha_mean_t * (mean_k y_hat - y)^2 ).mean()   reconstruction
-```
+$$\mathcal{L}_{\mathcal{G}}^{(t)} = \mathbb{E}\left[-\log\left(1-\sigma(D_{\psi_t}(\boldsymbol{x},\hat\gamma))\right)\right] + (1-\lambda)\,\mathrm{log\_q} + \beta\,\mathcal{L}_{recon}^{(t)}$$
 
-and the total is the mean over the tasks (`nanmean`).
+and the total is the mean over the tasks (`nanmean`). In the code the adversarial term is written `softplus(D(x, γ̂))`, which equals the non-saturating form above, and
+β is the column `beta` of the configuration (1 for all the final models, not the gate β<sub>t</sub>).
 
 - **Adversarial term**: the generator is trained to obtain a low score, as the real pairs.
-- **Latent term** `log_q = 0.5 * sum_d (1 + log var_d - mu_d^2 - var_d)`, where `mu` and `var` are the mean and the variance, over the batch, of the output
-  of the latent encoder `net_E([x, y_hat])` (dimension `n_f`). It equals `-KL(N(mu, var) || N(0, I))`, so with `lam > 1` the term
-  `(1 - lam) * log_q` is a KL penalty of weight `lam - 1` (all the final models use `lam = 1.5`, a weight of 0.5).
-- **Softmin-of-K reconstruction**: for the `K` generated values `y_hat_k` of a sample,
-  `softmin = -tau * logsumexp(-(y_hat_k - y)^2 / tau) + tau * log K`. For a small `tau` it approaches the squared error of the *best* of the `K`
-  samples: the generator is asked to cover the target with some of its samples, not to concentrate all of them on it. The term `alpha_mean * (mean_k y_hat_k - y)^2`
-  anchors the mean of the samples to the target. `tau` and `alpha_mean` are per task.
-- `beta` multiplies the reconstruction term.
+- **Latent-space regularisation** `log_q = 0.5 * sum_d (1 + log var_d - mu_d^2 - var_d)`, where `mu` and `var` are the mean and the variance, over the batch, of the output
+  of the latent encoder q<sub>η</sub>, `net_E([x, y_gen])` (dimension 256). It equals −KL(N(`mu`, `var`) ‖ N(**0**, **I**)), so with λ > 1 the term
+  (1 − λ) `log_q` is a KL penalty of weight λ − 1 (all the final models use λ = 1.5, a weight of 0.5).
+- **Softmin-of-K reconstruction** with a mean anchor:
+
+  $$\mathcal{L}_{recon}^{(t)} = -\tau_t\log\sum_{k=1}^{K}\exp\left[-\frac{(\hat\gamma_k-\gamma)^2}{\tau_t}\right] + \tau_t\log K + \alpha_t\Big[\frac{1}{K}\sum_{k=1}^{K}\hat\gamma_k-\gamma\Big]^2$$
+
+  For a small τ<sub>t</sub> the first two terms approach the squared error of the *best* of the K samples: the generator is asked to cover the target with some of its samples, not to concentrate all of
+  them on it. The last term anchors the mean of the samples to the target. τ<sub>t</sub> (`tau`) and α<sub>t</sub> (`alpha_mean`) are per task.
 
 ## Metrics
 
-At the end of every epoch, `CGAN.evaluate` runs on the training samples (batches of `batch_size`, a fixed random order, `K = 32` generated values per sample) and computes, per task:
+At the end of every epoch, `CGAN.evaluate` runs on the training samples (batches of `batch_size`, a fixed random order, K = 32 generated values per sample) and computes, per task:
 
 | Metric | Meaning |
 |---|---|
@@ -100,12 +106,12 @@ At the end of every epoch, `CGAN.evaluate` runs on the training samples (batches
 | `rmse`, `mae`, `r2` | errors of the generated values against the target, `r2` against the mean of the targets of the batch |
 | `cov95`, `cov50` | fraction of targets inside the central 95% and 50% interval of the generated values |
 | `width95` | mean width of the 95% interval, physical units |
-| `loss_G`, `loss_T` | generator and critic losses |
+| `loss_G`, `loss_T` | generator and discriminator losses |
 
 ## Learning-rate schedule
 
 The learning rates of both optimisers are halved (`ReduceLROnPlateau`, patience 10, factor 0.5, threshold 0) when the mean generator loss
-(for the generator optimiser) or the mean critic loss (for the critic optimiser) of the epoch has not decreased for 10 epochs. The loss
+(for the generator optimiser) or the mean discriminator loss (for the discriminator optimiser) of the epoch has not decreased for 10 epochs. The loss
 of a mini-batch is that of the last update of the batch.
 
 ## Checkpoint and stopping

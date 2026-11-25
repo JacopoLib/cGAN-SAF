@@ -4,19 +4,24 @@
 >
 > | Concept | Code |
 > |---|---|
-> | Choice of descriptor, selection per model | `DESCRIPTOR`, `DESCRIPTOR_SELECTION`, `descriptor_selection` (`cgan/config.py`) |
+> | Choice of descriptor | `DESCRIPTOR` (`cgan/config.py`) |
 > | Mordred computation and cache | `compute_mordred`, `mordred_raw`, `_mol_3d` (`cgan/descriptors.py`) |
 > | Fixed list of columns | `mordred_columns`, `data/descriptors/mordred_columns.txt` |
-> | Filter of the columns | `filter_descriptors` |
 > | Mol2Vec | `mol2vec_descriptors` |
 > | Standardisation | `build_dataset` (`cgan/data.py`) |
 > | New species at prediction time | `mordred_transform`, `new_species_descriptors` |
 
 Each species is represented by a vector of `L` descriptors. `L` is the **latent dimension** `ds.latent_dim` of the model: 347 for
-`tfz` and `dcn`, 309 for `dcn_tfz`, 300 for Mol2Vec. The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`)
+`tfz`, `dcn` and `dcn_tfz`, 300 for Mol2Vec. In the paper the descriptors of a species are the vector **φ** (standardised: **φ̃**), and the descriptors of a blend enter through **Φ** (see [Model architecture](Model-architecture.md#mixture-encoder)). The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`)
 chooses between `mordred` (default) and `mol2vec`.
 
 ## Mordred
+
+Mordred descriptors are the molecular representation of the pure compounds because they give a smoother mapping between the descriptor space and the freezing point than Mol2Vec: in the local-neighbourhood analysis of the paper, the dispersion of the labels among the nearest neighbours of a compound grows steadily with their distance in Mordred space, while Mol2Vec has clusters of chemically close molecules with very different freezing points.
+
+![Local dispersion of T_fz against descriptor distance](img/descriptor-smoothness.png)
+
+*Standard deviation of the T<sub>fz</sub> labels in the k<sub>NN</sub> = 31 neighbourhood of each pure compound against the mean distance of the standardised descriptors, for Mol2Vec (left) and Mordred (right). nP, iP, mcP, dcP, aB, aN, cA: n-paraffins, iso-paraffins, monocycloparaffins, dicycloparaffins, alkylbenzenes, alkylnaphthalenes, cycloaromatics.*
 
 ### Computation
 
@@ -47,34 +52,17 @@ The 3D descriptors depend on the RDKit conformer generator, so descriptors recom
 the shipped ones, and so do the trained models. The inference bundles store everything needed for prediction, so the shipped weights do not
 depend on the cache.
 
-### Selection of the columns
+### Columns
 
-The selection is per model (`DESCRIPTOR_SELECTION`):
-
-| Selection | Models | What it does |
-|---|---|---|
-| `fixed` | `tfz`, `dcn` | the 347 columns listed in `data/descriptors/mordred_columns.txt`; missing values replaced by the median of the column over the species of the model |
-| `filter` | `dcn_tfz` | the columns left by `filter_descriptors` applied to the species of both databases (309 columns) |
-
-`filter_descriptors` is a port of the MATLAB routine of the same name. In order, on the raw matrix (species x descriptors):
-
-1. drop the columns that are zero in more than 95% of the species;
-2. drop the columns with more than 30% missing values;
-3. replace the remaining missing values with the column median;
-4. drop the (near-)constant columns: standard deviation (ddof = 1) not above `1e-8`;
-5. drop correlated columns: for every pair of columns with an absolute Spearman correlation above 0.95, the **later** column is dropped
-   (the pairs are visited in column-major order, as MATLAB `find` does, and a pair is considered only if both columns are still kept).
-
-The thresholds are the constants `ZERO_FRAC_MAX`, `NAN_FRAC_MAX`, `STD_TOL`, `CORR_THR` of `cgan/descriptors.py`.
-
-For a task list that is not one of the three models, `descriptor_selection` returns `fixed`.
+All the models use the same 347 columns, listed in `data/descriptors/mordred_columns.txt`, so that a species has the same vector **φ** whichever model is used.
+Missing values are replaced by the median of the column over the species of the model.
 
 ## Mol2Vec
 
 `mol2vec_descriptors` gives a 300-dimensional embedding: each molecule is converted to a "sentence" of Morgan substructure
 identifiers (radius 1, `mol2alt_sentence`) and the vectors of the words are summed; words that are not in the pre-trained model are
 replaced by `UNK`. It needs `gensim`, `mol2vec` and `model_300dim.pkl` (see [Installation](Installation.md#optional-mol2vec)). There is no
-column selection and no cache. Models trained with Mol2Vec are written to `results/final/<model>_mol2vec/`.
+all the 300 dimensions are used, and there is no cache. Models trained with Mol2Vec are written to `results/final/<model>_mol2vec/`.
 
 ## Standardisation
 

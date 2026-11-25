@@ -1,9 +1,7 @@
 """Molecular descriptors of the pure species: Mordred (default) or Mol2Vec.
 
 Mordred descriptors are computed from the SMILES (1D/2D/3D, one MMFF-optimised conformer per molecule), cached in
-`data/descriptors/mordred_raw.csv.gz`. Two selections of the Mordred columns are available (`DESCRIPTOR_SELECTION` in
-`config.py`): the fixed list in `data/descriptors/mordred_columns.txt` ("fixed") and the species-dependent filter of
-the original MATLAB routine ("filter"). Run
+`data/descriptors/mordred_raw.csv.gz`. The models use the fixed list of columns in `data/descriptors/mordred_columns.txt`. Run
 
     python -m cgan.descriptors --kind mordred
 
@@ -19,50 +17,12 @@ import re
 import numpy as np
 import pandas as pd
 
-from scipy.stats import spearmanr
-
 from . import config
-
-ZERO_FRAC_MAX = 0.95  # filter: drop columns that are zero in more than 95% of the species
-NAN_FRAC_MAX = 0.30  # filter: drop columns with more than 30% missing values
-STD_TOL = 1e-8  # filter: drop (near-)constant columns
-CORR_THR = 0.95  # filter: |Spearman| above which the later column of a pair is dropped
 
 
 def clean_smiles(smiles):
     """Strip all whitespace (including non-breaking spaces) from a SMILES string."""
     return re.sub(r"\s+", "", str(smiles).replace(" ", ""))
-
-
-def filter_descriptors(X):
-    """Port of the MATLAB `filter_descriptors`. Returns the filtered, median-imputed matrix and the kept-column mask."""
-    X = np.asarray(X, dtype=float)
-    keep = np.ones(X.shape[1], dtype=bool)
-    keep &= ~((X == 0).mean(axis=0) > ZERO_FRAC_MAX)
-    keep &= ~(np.isnan(X).mean(axis=0) > NAN_FRAC_MAX)
-    idx = np.flatnonzero(keep)
-    Xk = X[:, idx].copy()
-
-    col_median = np.nanmedian(Xk, axis=0)
-    rows, cols = np.nonzero(np.isnan(Xk))
-    Xk[rows, cols] = col_median[cols]
-
-    varying = Xk.std(axis=0, ddof=1) > STD_TOL
-    idx, Xk = idx[varying], Xk[:, varying]
-
-    keep_corr = np.ones(Xk.shape[1], dtype=bool)
-    if Xk.shape[1] >= 2:
-        corr = np.abs(spearmanr(Xk).statistic)
-        pairs = np.argwhere(np.triu(corr, 1) > CORR_THR)
-        pairs = pairs[np.lexsort((pairs[:, 0], pairs[:, 1]))]  # column-major order, as in MATLAB `find`
-        for i, j in pairs:
-            if keep_corr[i] and keep_corr[j]:
-                keep_corr[j] = False
-    idx, Xk = idx[keep_corr], Xk[:, keep_corr]
-
-    mask = np.zeros(X.shape[1], dtype=bool)
-    mask[idx] = True
-    return Xk, mask
 
 
 def _mol_3d(smiles):
@@ -126,21 +86,13 @@ def mordred_columns(path=os.path.join(config.DESCRIPTOR_DIR, "mordred_columns.tx
         return [line.strip() for line in f if line.strip()]
 
 
-def mordred_descriptors(smiles, selection="fixed", cache_dir=config.DESCRIPTOR_DIR, recompute=False):
+def mordred_descriptors(smiles, cache_dir=config.DESCRIPTOR_DIR, recompute=False):
     """Mordred descriptor matrix (n_species, n_descriptors) for `smiles`, and the information that maps new species onto
     the same descriptors (column names and medians used to impute missing values), see `mordred_transform`.
 
-    selection="fixed": the columns listed in `data/descriptors/mordred_columns.txt`; missing values are replaced by the
-    column medians over `smiles`.
-    selection="filter": the columns retained by `filter_descriptors` applied to `smiles`, i.e. to the species of the
-    databases of the requested tasks."""
+    The columns are those listed in `data/descriptors/mordred_columns.txt`; missing values are replaced by the column
+    medians over `smiles`."""
     raw = mordred_raw(smiles, os.path.join(cache_dir, "mordred_raw.csv.gz"), recompute)
-    if selection == "filter":
-        X, mask = filter_descriptors(raw.to_numpy(dtype=float))
-        columns = list(raw.columns[mask])
-        return X, {"columns": columns, "medians": np.nanmedian(raw[columns].to_numpy(dtype=float), axis=0)}
-    if selection != "fixed":
-        raise ValueError(f"unknown descriptor selection {selection!r}")
     columns = mordred_columns(os.path.join(cache_dir, "mordred_columns.txt"))
     X = raw.reindex(columns=columns).apply(pd.to_numeric, errors="coerce").to_numpy(dtype=float, copy=True)
     medians = np.nanmedian(X, axis=0)
@@ -150,7 +102,7 @@ def mordred_descriptors(smiles, selection="fixed", cache_dir=config.DESCRIPTOR_D
 
 
 def mordred_transform(smiles, info, cache_dir=config.DESCRIPTOR_DIR):
-    """Mordred descriptors of (possibly new) species, restricted to the columns retained by `mordred_descriptors`."""
+    """Mordred descriptors of (possibly new) species, restricted to the columns of the fixed list."""
     raw = mordred_raw(smiles, os.path.join(cache_dir, "mordred_raw.csv.gz"), update_cache=False)
     X = raw.reindex(columns=info["columns"]).apply(pd.to_numeric, errors="coerce").to_numpy(dtype=float, copy=True)
     rows, cols = np.nonzero(np.isnan(X))
@@ -175,12 +127,12 @@ def mol2vec_descriptors(smiles, model_path=config.MOL2VEC_MODEL):
     return np.asarray(vectors)
 
 
-def species_descriptors(smiles, kind=config.DESCRIPTOR, recompute=False, selection="fixed"):
+def species_descriptors(smiles, kind=config.DESCRIPTOR, recompute=False):
     """Descriptor matrix (n_species, n_descriptors) of the given species, with `kind` in {"mordred", "mol2vec"}, and
     the information needed to describe new species in the same way (see `new_species_descriptors`)."""
     smiles = [clean_smiles(s) for s in smiles]
     if kind == "mordred":
-        return mordred_descriptors(smiles, selection, recompute=recompute)
+        return mordred_descriptors(smiles, recompute=recompute)
     if kind == "mol2vec":
         return mol2vec_descriptors(smiles), {}
     raise ValueError(f"unknown descriptor kind {kind!r}")
@@ -204,5 +156,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     kind = args.kind
     vocabulary = species_vocabulary(args.tasks)
-    X, _ = species_descriptors(vocabulary, kind, args.recompute, config.descriptor_selection(args.tasks))
+    X, _ = species_descriptors(vocabulary, kind, args.recompute)
     print(f"{kind}: {X.shape[0]} species, {X.shape[1]} descriptors")

@@ -8,7 +8,7 @@
 | Package | Used for |
 |---|---|
 | `torch` | networks and training |
-| `numpy`, `pandas`, `scipy` | data handling; `scipy` for the Spearman correlations of the descriptor filter |
+| `numpy`, `pandas` | data handling |
 | `scikit-learn` | listed in `requirements.txt`; not imported by the code |
 | `rdkit` | SMILES parsing, canonical SMILES, 3D conformers |
 | `mordredcommunity` | Mordred descriptors of species that are not in the cache |

@@ -33,7 +33,7 @@ for the check) of a single-task and of the multi-task model, and check that the 
 
 ## Extending the code
 
-- **A new model** (a different combination of the existing tasks): add it to `config.MODELS` and `config.DESCRIPTOR_SELECTION`, and create `configs/<name>.csv`.
+- **A new model** (a different combination of the existing tasks): add it to `config.MODELS` and create `configs/<name>.csv`.
 - **A new property**: add a loader in `cgan/data.py` and register it in `LOADERS`, add the task to `config.TASKS` (with its gate), and add the model.
 - **A new descriptor**: add it to `species_descriptors` and `new_species_descriptors` in `cgan/descriptors.py` and to the `choices` of `--descriptor`.
 

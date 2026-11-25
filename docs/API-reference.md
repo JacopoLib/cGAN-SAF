@@ -20,8 +20,7 @@ The package `cgan/` and the two scripts at the root. Shapes use `B` for the batc
 
 ## `cgan/config.py`
 
-Constants only; see [Configuration reference](Configuration-reference.md). The function `descriptor_selection(tasks)` returns the Mordred column selection
-(`fixed` or `filter`) of the model whose tasks are `tasks`.
+Constants only; see [Configuration reference](Configuration-reference.md).
 
 ## `cgan/data.py`
 
@@ -40,12 +39,11 @@ Constants only; see [Configuration reference](Configuration-reference.md). The f
 | `clean_smiles(smiles)` | removes all whitespace |
 | `compute_mordred(smiles)` | raw Mordred table (1D, 2D, 3D) of a list of SMILES |
 | `mordred_raw(smiles, cache_path, recompute, update_cache)` | raw table from the cache, computing the missing species |
-| `mordred_columns(path)` | the 347 names of the fixed selection |
-| `filter_descriptors(X)` | filtered, median-imputed matrix and mask of the kept columns |
-| `mordred_descriptors(smiles, selection, ...)` | descriptor matrix and `info` (columns, medians) |
+| `mordred_columns(path)` | the 347 names of the fixed list |
+| `mordred_descriptors(smiles, ...)` | descriptor matrix and `info` (columns, medians) |
 | `mordred_transform(smiles, info)` | descriptors of new species, restricted to the columns of `info` |
 | `mol2vec_descriptors(smiles, model_path)` | 300-dimensional Mol2Vec embeddings |
-| `species_descriptors(smiles, kind, recompute, selection)` | descriptor matrix and `info` for `mordred` or `mol2vec` |
+| `species_descriptors(smiles, kind, recompute)` | descriptor matrix and `info` for `mordred` or `mol2vec` |
 | `new_species_descriptors(smiles, kind, info)` | raw descriptors of species outside the vocabulary |
 
 Run as a module (`python -m cgan.descriptors`) to build the cache: options `--tasks`, `--kind`, `--recompute`.

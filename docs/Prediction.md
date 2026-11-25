@@ -2,7 +2,7 @@
 
 `predict.py` returns the predictive distribution of a property for pure compounds or blends, from an inference bundle written by
 `train_final.py` (see [Training](Training.md#outputs)). The trained weights of the paper are archived on Zenodo
-([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)).
+([10.5281/zenodo.24087390](https://doi.org/10.5281/zenodo.24087390)).
 
 ## Inference bundles
 
@@ -68,7 +68,11 @@ bundle and the tasks the model was trained on (`Task: dcn (model trained on: dcn
 For each fuel the code draws `n_samples` latent vectors `z ~ N(0, I)`, runs the generator on `(x, z)` with the mixture representation `x` of the fuel, and
 converts back to physical units with the `y_mean` and `y_std` of the bundle. The mean, the standard deviation and the quantiles summarise these samples:
 they describe the distribution that the generator has learned, conditional on the fuel. The validation of this distribution (coverage of the
-intervals, comparison with other methods) is in the paper.
+intervals, comparison with other methods) is in the paper. The 95% intervals are close to nominal coverage and mildly overconfident: the paper reports 88.9% for the freezing point and 87.1% for the DCN of the multi-task model.
+
+![Reliability diagram of the multi-task model](img/reliability-multitask.png)
+
+*Reliability diagram of the multi-task model: empirical coverage of the central prediction intervals (Cov<sup>(emp)</sup><sub>1−α</sub>) against the nominal level 1 − α.*
 
 - The latent vectors come from a generator seeded with `config.SEED` (42), so the output is reproducible for a given bundle and input.
 - The noise of a fuel depends on its **position** in the input: the same molecule listed twice receives different latent vectors, and its means

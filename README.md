@@ -7,6 +7,8 @@ PyTorch code and datasets accompanying
 
 The model predicts the **distribution** of a property of a pure hydrocarbon or of a blend from the SMILES and the volume fractions of its components: every component is described by Mordred descriptors (or a Mol2Vec embedding), the blend by their fraction-weighted mean plus a multi-query attention correction, and a generator that takes a latent noise vector returns samples of the property. Two properties of sustainable aviation fuels are covered: the **derived cetane number** (DCN) and the **freezing point** (T<sub>fz</sub>).
 
+![Graphical abstract](img/graphical-abstract.png)
+
 The repository contains the final training of the **three c-GAN models** of the paper, each on its whole property
 database and with the hyperparameters selected by the nested k-fold cross-validation (Section 2.5):
 
@@ -18,7 +20,7 @@ database and with the hyperparameters selected by the nested k-fold cross-valida
 
 All models use Mordred descriptors for the pure compounds, multi-query attention pooling with feature augmentation
 for mixtures, the softmin-of-K reconstruction loss and a checkpoint on the CRPS. The trained weights are
-archived on Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)); `predict.py` uses them to predict the property of new pure compounds and blends. The nested cross-validation used to select the hyperparameters is described in the paper and is not part of this repository.
+archived on Zenodo ([10.5281/zenodo.24087390](https://doi.org/10.5281/zenodo.24087390)); `predict.py` uses them to predict the property of new pure compounds and blends. The nested cross-validation used to select the hyperparameters is described in the paper and is not part of this repository.
 
 # Repository layout
 
@@ -28,7 +30,7 @@ predict.py         predictive distribution for pure compounds or blends from an 
 configs/           hyperparameters of the three models
 cgan/
   config.py        paths, descriptor flag, per-task gate, training settings
-  descriptors.py   Mordred (computed from the SMILES; fixed list or filtered) and Mol2Vec species descriptors
+  descriptors.py   Mordred (computed from the SMILES; fixed list of columns) and Mol2Vec species descriptors
   data.py          freezing-point and DCN databases -> Dataset
   models.py        mixture encoder (attention pooling), generator, discriminators, latent encoder
   trainer.py       adversarial and softmin-of-K losses, CRPS and other metrics, training loop
@@ -42,7 +44,7 @@ docs/              documentation
 
 | | |
 |---|---|
-| **Python** | Python 3.12; `torch`, `numpy`, `pandas`, `scipy`, `rdkit` and `mordredcommunity`, with the versions in [`requirements.txt`](requirements.txt) (those used to produce the results of the paper). `gensim` and `mol2vec` are needed only for the Mol2Vec descriptors. |
+| **Python** | Python 3.12; `torch`, `numpy`, `pandas`, `rdkit` and `mordredcommunity`, with the versions in [`requirements.txt`](requirements.txt) (those used to produce the results of the paper). `gensim` and `mol2vec` are needed only for the Mol2Vec descriptors. |
 | **Hardware** | CPU or CUDA GPU |
 
 # Quick start
@@ -99,11 +101,8 @@ with the same descriptors as in training (this needs RDKit and mordred).
 
 The flag `DESCRIPTOR` in `cgan/config.py` (or `--descriptor` on `train_final.py`) chooses the molecular representation:
 
-* `mordred` (default): Mordred 1D/2D/3D descriptors computed from the SMILES and standardized. The columns are selected
-  per model (`DESCRIPTOR_SELECTION` in `cgan/config.py`):
-  * `tfz` and `dcn`: the fixed list of 347 descriptors in `data/descriptors/mordred_columns.txt`;
-  * `dcn_tfz`: the columns left by a filter (columns that are mostly zero or missing, near-constant, or
-    Spearman-correlated above 0.95 with an earlier column) applied to the species of both databases (309 columns).
+* `mordred` (default): Mordred 1D/2D/3D descriptors computed from the SMILES and standardized. All three models use the fixed list of 347 columns in
+  `data/descriptors/mordred_columns.txt`.
 
   The raw descriptors of all species are shipped in `data/descriptors/mordred_raw.csv.gz`; run
 
@@ -133,7 +132,8 @@ The file formats, the units and the way the databases become training samples ar
 The `docs/` folder describes the code in detail, starting from [`docs/README.md`](docs/README.md):
 
 * how to use the code: [installation](docs/Installation.md), [quick start](docs/Quick-start.md), [prediction](docs/Prediction.md), [configuration reference](docs/Configuration-reference.md), [input data](docs/Input-data.md), [API reference](docs/API-reference.md) and [development notes](docs/Development.md);
-* what the code does: [descriptors](docs/Descriptors.md), [model architecture](docs/Model-architecture.md) and [training](docs/Training.md).
+* what the code does: [descriptors](docs/Descriptors.md), [model architecture](docs/Model-architecture.md) and [training](docs/Training.md);
+* the symbols of the paper and the names of the code: [notation](docs/Notation.md).
 
 # How to cite
 
@@ -141,7 +141,7 @@ The `docs/` folder describes the code in detail, starting from [`docs/README.md`
 @article{Liberatori2026cGAN,
   title   = {Uncertainty-aware sustainable aviation fuel property prediction using a conditional generative adversarial network with attention pooling},
   author  = {Liberatori, Jacopo and Iavarone, Salvatore and Vicquelin, Ronan},
-  journal = {Energy & Fuels (submitted for publication)},
+  journal = {Energy \& Fuels (submitted for publication)},
   year    = {2026}
 }
 ```

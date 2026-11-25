@@ -33,7 +33,7 @@ data/
 │   └── blends_Tfz.csv          (261,) freezing point [K] of each blend, no header
 └── descriptors/
     ├── mordred_raw.csv.gz      raw Mordred descriptors of 1047 species (cache)
-    └── mordred_columns.txt     the 347 columns of the fixed selection
+    └── mordred_columns.txt     the 347 columns used by the models
 ```
 
 ## Units and content
@@ -47,6 +47,14 @@ Composition of the blends:
 
 - `tfz`: 251 binary and 10 ternary blends.
 - `dcn`: 296 binary, 114 ternary, 123 with four components, 6 with five, 2 with six, 1 with eight and 1 with nine.
+
+![Freezing-point database](img/dataset-freezing.png)
+
+*Distribution of the freezing points of the pure compounds, by molecular group, and of the blends. The dashed line is the ASTM D7566 limit (-40 °C).*
+
+![DCN database](img/dataset-dcn.png)
+
+*Distribution of the derived cetane numbers of the pure compounds, by molecular group, and of the blends.*
 
 ## How a database becomes samples
 
@@ -67,7 +75,7 @@ The number of samples and species that result:
 |---|---|---|---|
 | `tfz` | 1154 (893 pure + 261 blends) | 890 | 347 |
 | `dcn` | 929 (386 pure + 543 blends) | 249 | 347 |
-| `dcn_tfz` | 2083 | 1047 (92 are in both databases) | 309 |
+| `dcn_tfz` | 2083 | 1047 (92 are in both databases) | 347 |
 
 The 254 pure compounds of `dcn` correspond to 249 distinct SMILES: some names are written with the same structure.
 

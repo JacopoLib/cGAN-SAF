@@ -54,7 +54,7 @@ python predict.py --bundle results/final/dcn_tfz/bundle_dcn.pt --input blends.cs
 ```
 
 The output has one row per fuel with `mean`, `std`, `q2.5` and `q97.5` (see [Prediction](Prediction.md#output)). To use the trained weights of the paper, download the
-bundles from Zenodo ([10.5281/zenodo.23946612](https://doi.org/10.5281/zenodo.23946612)) and pass their path to `--bundle`.
+bundles from Zenodo ([10.5281/zenodo.24087390](https://doi.org/10.5281/zenodo.24087390)) and pass their path to `--bundle`.
 
 ## 4. Change something
 
