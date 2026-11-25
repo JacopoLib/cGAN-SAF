@@ -36,7 +36,9 @@ matrix `Z_species` (the vectors **φ**<sub>i</sub>) and the task of the sample.
 3. **Multi-query attention pooling** (`MultiQueryPooling`), with Q = `num_queries` learnable queries **q**<sub>A</sub>, **q**<sub>B</sub>, … of dimension L. The component
    embeddings are both keys and values. For query A and component i the attention weight is
 
-   $$w_i^A = \mathrm{softmax}_i\left[\frac{\boldsymbol{q}_A\cdot\boldsymbol{\phi}_i}{\sqrt{L}} + \alpha_A \log v_i\right]$$
+   ```math
+   w_i^A = \mathrm{softmax}_i\left[\frac{\boldsymbol{q}_A\cdot\boldsymbol{\phi}_i}{\sqrt{L}} + \alpha_A \log v_i\right]
+   ```
 
    where α<sub>A</sub> is a learnable fraction bias per query (`frac_scale`, initialised at 0.5), so that the composition enters the attention. In the code the
    fraction is floored at `1e-12` inside the logarithm, and padding is masked with `-inf`. The pooled vector of query A is **φ**<sup>A</sup><sub>mix</sub> = Σ<sub>i</sub> w<sub>i</sub><sup>A</sup>**φ**<sub>i</sub>.

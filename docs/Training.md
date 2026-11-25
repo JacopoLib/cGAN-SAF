@@ -73,13 +73,17 @@ losses are averaged over the tasks that have labels in the batch.
 
 **Discriminator (`critic_loss`)**, per task t:
 
-$$\mathcal{L}_{\mathcal{D}} = -\Big[\,\mathbb{E}\log\left(1-\sigma(D_{\psi_t}(\boldsymbol{x},\gamma))\right) + \mathbb{E}\log\sigma\left(D_{\psi_t}(\boldsymbol{x},\hat\gamma)\right)\Big]$$
+```math
+\mathcal{L}_{\mathcal{D}} = -\Big[\,\mathbb{E}\log\left(1-\sigma(D_{\psi_t}(\boldsymbol{x},\gamma))\right) + \mathbb{E}\log\sigma\left(D_{\psi_t}(\boldsymbol{x},\hat\gamma)\right)\Big]
+```
 
 where the generated values are detached. The discriminator is trained to give a low score to real pairs and a high score to generated pairs.
 
 **Generator and encoder (`generator_loss`)**, per task t:
 
-$$\mathcal{L}_{\mathcal{G}}^{(t)} = \mathbb{E}\left[-\log\left(1-\sigma(D_{\psi_t}(\boldsymbol{x},\hat\gamma))\right)\right] + (1-\lambda)\,\mathrm{log\_q} + \beta\,\mathcal{L}_{recon}^{(t)}$$
+```math
+\mathcal{L}_{\mathcal{G}}^{(t)} = \mathbb{E}\left[-\log\left(1-\sigma(D_{\psi_t}(\boldsymbol{x},\hat\gamma))\right)\right] + (1-\lambda)\,\mathrm{log\_q} + \beta\,\mathcal{L}_{recon}^{(t)}
+```
 
 and the total is the mean over the tasks (`nanmean`). In the code the adversarial term is written `softplus(D(x, γ̂))`, which equals the non-saturating form above, and
 β is the column `beta` of the configuration (1 for all the final models, not the gate β<sub>t</sub>).
@@ -90,7 +94,9 @@ and the total is the mean over the tasks (`nanmean`). In the code the adversaria
   (1 − λ) `log_q` is a KL penalty of weight λ − 1 (all the final models use λ = 1.5, a weight of 0.5).
 - **Softmin-of-K reconstruction** with a mean anchor:
 
-  $$\mathcal{L}_{recon}^{(t)} = -\tau_t\log\sum_{k=1}^{K}\exp\left[-\frac{(\hat\gamma_k-\gamma)^2}{\tau_t}\right] + \tau_t\log K + \alpha_t\Big[\frac{1}{K}\sum_{k=1}^{K}\hat\gamma_k-\gamma\Big]^2$$
+  ```math
+  \mathcal{L}_{recon}^{(t)} = -\tau_t\log\sum_{k=1}^{K}\exp\left[-\frac{(\hat\gamma_k-\gamma)^2}{\tau_t}\right] + \tau_t\log K + \alpha_t\Big[\frac{1}{K}\sum_{k=1}^{K}\hat\gamma_k-\gamma\Big]^2
+  ```
 
   For a small τ<sub>t</sub> the first two terms approach the squared error of the *best* of the K samples: the generator is asked to cover the target with some of its samples, not to concentrate all of
   them on it. The last term anchors the mean of the samples to the target. τ<sub>t</sub> (`tau`) and α<sub>t</sub> (`alpha_mean`) are per task.
